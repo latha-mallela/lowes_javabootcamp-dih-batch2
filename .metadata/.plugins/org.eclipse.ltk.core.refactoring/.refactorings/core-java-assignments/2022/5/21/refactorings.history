@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;core-java-assignments&apos;&#x0D;&#x0A;- Original project: &apos;core-java-assignments&apos;&#x0D;&#x0A;- Original element: &apos;core-java-assignments/src/com.assignments&apos;&#x0D;&#x0A;- Delete subpackages" description="Delete element" element1="/src&lt;com.assignments.assignment1" element2="/src&lt;com.assignments" element3="/src&lt;com" elements="3" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1652692004216" subPackages="true" version="1.0"/>
+</session>
