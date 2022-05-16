@@ -1,4 +1,0 @@
-INDEX VERSION 1.131+E:\Lowes Training\lowes_javabootcamp-dih-batch2\.metadata\.plugins\org.eclipse.jdt.core
-2095378855.index
-1865797976.index
-2428436370.index
