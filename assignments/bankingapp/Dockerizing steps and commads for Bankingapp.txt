@@ -1,0 +1,68 @@
+#Dockerize Registry Service
+${PROJECT_HOME}/labs/examples/bankingapp-registry-service
+
+mvnw clean install -DskipTests
+docker build -t bankingapp/registry-service:latest .
+
+docker tag bankingapp/registry-service swarnamallela/bankingapp-registry-service
+
+docker push swarnamallela/bankingapp-registry-service
+
+docker run -d --name=bankingapp-registry-service -p 8761:8761 bankingapp/registry-service
+----------------------------------------------------------------------------------------
+#Dockerize gateway Service
+${PROJECT_HOME}/labs/examples/bankingapp-gateway-service
+
+mvnw clean install -DskipTests
+docker build -t bankingapp/gateway-service:latest .
+
+docker tag bankingapp/gateway-service swarnamallela/bankingapp-gateway-service
+
+docker push swarnamallela/bankingapp-gateway-service
+
+docker run -d --name=bankingapp-gateway-service -p 8111:8111 -e "REGISTRY_SERVER_HOST=172.17.0.2" bankingapp/gateway-service
+-------------------------------------------------------------------------------------------------------------------------------
+#to bring up kafka
+docker-compose -f docker-compose-kafka.yml up -d
+
+#to bring up mysql container
+docker run -dp 3306:3306 --name mysql1 -v mysql-vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=training -e MYSQL_PASSWORD=training mysql:8.0.29
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Dockerize account Service
+${PROJECT_HOME}/labs/examples/bankingapp-account-service
+
+mvnw clean install -DskipTests
+docker build -t bankingapp/account-service:latest .
+
+docker tag bankingapp/account-service swarnamallela/bankingapp-account-service
+
+docker push swarnamallela/bankingapp-account-service
+
+docker run -d --name=bankingapp-account-service -p 8091:8091 -e "REGISTRY_SERVER_HOST=172.17.0.2" bankingapp/account-service
+----------------------------------------------------------------------------------------------------------------------------
+#Dockerize fundstransfer Service
+${PROJECT_HOME}/labs/examples/bankingapp-fundstransfer-service
+
+mvnw clean install -DskipTests
+docker build -t bankingapp/fundstransfer-service:latest .
+
+docker tag bankingapp/fundstransfer-service swarnamallela/bankingapp-fundstransfer-service
+
+docker push swarnamallela/bankingapp-fundstransfer-service
+
+docker run -d --name=bankingapp-fundstransfer-service -p 8093:8093 -e "REGISTRY_SERVER_HOST=172.17.0.2" -e "KAFKA_BOOTSTRAP_SERVERS=192.168.1.3:9092" bankingapp/fundstransfer-service
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Dockerize transaction Service
+${PROJECT_HOME}/labs/examples/bankingapp-transaction-service
+
+mvnw clean install -DskipTests
+docker build -t bankingapp/transaction-service:latest .
+
+docker tag bankingapp/transaction-service swarnamallela/bankingapp-transaction-service
+
+docker push swarnamallela/bankingapp-transaction-service
+
+docker run -d --name=bankingapp-transaction-service -p 8092:8092 -e "REGISTRY_SERVER_HOST=172.17.0.2" -e "KAFKA_BOOTSTRAP_SERVERS=192.168.1.3:9092" bankingapp/transaction-service
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
