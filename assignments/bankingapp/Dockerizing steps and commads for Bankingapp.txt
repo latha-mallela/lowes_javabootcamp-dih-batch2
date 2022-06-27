@@ -20,13 +20,17 @@ docker tag bankingapp/gateway-service swarnamallela/bankingapp-gateway-service
 
 docker push swarnamallela/bankingapp-gateway-service
 
-docker run -d --name=bankingapp-gateway-service -p 8111:8111 -e "REGISTRY_SERVER_HOST=172.17.0.2" bankingapp/gateway-service
+docker run -d --name=bankingapp-gateway-service -p 8111:8111 -e "REGISTRY_SERVER_HOST=172.17.0.3" bankingapp/gateway-service
 -------------------------------------------------------------------------------------------------------------------------------
 #to bring up kafka
 docker-compose -f docker-compose-kafka.yml up -d
 
 #to bring up mysql container
-docker run -dp 3306:3306 --name mysql1 -v mysql-vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=training -e MYSQL_PASSWORD=training mysql:8.0.29
+docker run -dp 3306:3306 --name mysql1 -v mysql-vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=jdbctraining -e MYSQL_USER=training -e MYSQL_PASSWORD=training mysql:8.0.29
+
+connect to mysql on workbench
+create jdbctraining schema
+GRANT ALL PRIVILEGES ON jdbctraining TO 'training'@'%';
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Dockerize account Service
@@ -39,7 +43,7 @@ docker tag bankingapp/account-service swarnamallela/bankingapp-account-service
 
 docker push swarnamallela/bankingapp-account-service
 
-docker run -d --name=bankingapp-account-service -p 8091:8091 -e "REGISTRY_SERVER_HOST=172.17.0.2" bankingapp/account-service
+docker run -d --name=bankingapp-account-service -p 8091:8091 -e "REGISTRY_SERVER_HOST=172.17.0.3" bankingapp/account-service
 ----------------------------------------------------------------------------------------------------------------------------
 #Dockerize fundstransfer Service
 ${PROJECT_HOME}/labs/examples/bankingapp-fundstransfer-service
@@ -51,7 +55,7 @@ docker tag bankingapp/fundstransfer-service swarnamallela/bankingapp-fundstransf
 
 docker push swarnamallela/bankingapp-fundstransfer-service
 
-docker run -d --name=bankingapp-fundstransfer-service -p 8093:8093 -e "REGISTRY_SERVER_HOST=172.17.0.2" -e "KAFKA_BOOTSTRAP_SERVERS=192.168.1.3:9092" bankingapp/fundstransfer-service
+docker run -d --name=bankingapp-fundstransfer-service -p 8093:8093 -e "REGISTRY_SERVER_HOST=172.17.0.3" -e "KAFKA_BOOTSTRAP_SERVERS=192.168.1.3:9092" bankingapp/fundstransfer-service
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Dockerize transaction Service
 ${PROJECT_HOME}/labs/examples/bankingapp-transaction-service
@@ -63,6 +67,16 @@ docker tag bankingapp/transaction-service swarnamallela/bankingapp-transaction-s
 
 docker push swarnamallela/bankingapp-transaction-service
 
-docker run -d --name=bankingapp-transaction-service -p 8092:8092 -e "REGISTRY_SERVER_HOST=172.17.0.2" -e "KAFKA_BOOTSTRAP_SERVERS=192.168.1.3:9092" bankingapp/transaction-service
+docker run -d --name=bankingapp-transaction-service -p 8092:8092 -e "REGISTRY_SERVER_HOST=172.17.0.3" -e "KAFKA_BOOTSTRAP_SERVERS=192.168.1.3:9092" bankingapp/transaction-service
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Dockerize admin Service
+${PROJECT_HOME}/labs/examples/bankingapp-admin-service
 
+mvnw clean install -DskipTests
+docker build -t bankingapp/admin-service:latest .
+
+docker tag bankingapp/admin-service swarnamallela/bankingapp-admin-service
+
+docker push swarnamallela/bankingapp-admin-service
+
+docker run -d --name=bankingapp-admin-service -p 7777:7777 -e "REGISTRY_SERVER_HOST=172.17.0.3" bankingapp/admin-service
